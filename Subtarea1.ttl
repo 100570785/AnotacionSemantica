@@ -1,0 +1,19 @@
+# =============================================================================
+# Subtarea 1: Ampliación del vocabulario RDF Schema
+# Descripción: Definición de las subclases de Entity (Person, Location, 
+# Organization) y la propiedad literal para el nombre de la entidad.
+# =============================================================================
+
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix miaa: <urn:uc3m.es:miaa#> .
+
+# 1. Definir las 3 subclases de la clase Entity
+miaa:Person rdfs:subClassOf miaa:Entity .
+miaa:Location rdfs:subClassOf miaa:Entity .
+miaa:Organization rdfs:subClassOf miaa:Entity .
+
+# 2. Definir una propiedad con valor literal para el nombre de la entidad
+miaa:hasName a rdf:Property ;
+    rdfs:domain miaa:Entity ;
+    rdfs:range rdfs:Literal .
