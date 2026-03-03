@@ -3,7 +3,7 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
-/src/main/java/org/example/Config.java
+.src/main/java/org/example/Config.java
 
 ### IntelliJ IDEA ###
 .idea/modules.xml
