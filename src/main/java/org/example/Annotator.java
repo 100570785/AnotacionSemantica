@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class Annotator {
 
     // --- IMPORTANTE: Pega tu API Key de Google aquí ---
-    private static final String API_KEY = "AIzaSyA_4eIqrP_5qh98Noy5zBr63ynB5TfWdFo";
+    private static final String API_KEY = "PEGAR API KEY DE GEMINI AQUÍ";
 
     public static void main(String[] args) {
 
