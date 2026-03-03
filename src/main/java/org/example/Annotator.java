@@ -16,13 +16,17 @@ public class Annotator {
             if (args.length == 3) { // file and class included
                 String clase = args[2];
             } else {
+                // Lectura del archivo de urls
                 MyFileReader fileReader = new MyFileReader(nombreArchivo);
+                // Para usar ANNIE
                 MyGATE gate =  MyGATE.getInstance();
                 List<Entity> resultados;
                 while(fileReader.hasNextLine()){
                     try {
+                        // Tomar las urls del archivo
                         URL url = new URL(fileReader.getLine());
                         System.out.println(url);
+                        // Buscar entidades
                         resultados = gate.findEntities(url);
                         for (Entity e: resultados){
                             System.out.println(e.getText() + "->"  + e.getType());
@@ -35,7 +39,7 @@ public class Annotator {
         }
 
 
-//        Client client = new Client(Config.API_ANTONIO);
+//        Client client = new Client(Config.CLAVE_API);
 //        String response = client.querySinConfig("Tell me something about Paris");
 //        System.out.println(response);
     }
