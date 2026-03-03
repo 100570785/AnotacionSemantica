@@ -1,6 +1,6 @@
 package org.example;
 
 public class Config {
-    public static final String API_ANTONIO = "";
-    public static final String API_ADRIAN = "";
+    // Rellenar con la clave del api de gemini
+    public static final String CLAVE_API = "";
 }
