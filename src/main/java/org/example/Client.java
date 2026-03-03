@@ -13,14 +13,11 @@ public class Client {
         client = com.google.genai.Client.builder().apiKey(API_KEY).build();
     }
 
-    public String querySinConfig(String query) {
-        GenerateContentResponse response = client.models.generateContent(model, query, null);
-        return response.text();
-    }
-
     public String queryConConfig(String location) {
-        // Este texto habra que cambiarlo cuando probemos con Gemini
-        String query = "I am going to give you a location name. Please answer ONLY with the URL of the English version of Wikipedia (starting with https://en.wikipedia.org/) that most likely identifies that location. ";
+        // Este texto igual hay que cambiarlo que lo evalua
+        String query = "I am going to give you a location name and some context from a document. " +
+                "Please answer ONLY with the URL of the English version of Wikipedia (starting with https://en.wikipedia.org/wiki/) "
+                + "that most likely identifies that location. Do not include any other text, markdown, or explanation.";
         GenerateContentConfig config =
                 GenerateContentConfig.builder().systemInstruction(
                         Content.fromParts(Part.fromText(query))).build();
@@ -28,5 +25,4 @@ public class Client {
         GenerateContentResponse response = client.models.generateContent(model, location, config);
         return response.text();
     }
-
 }
