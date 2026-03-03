@@ -40,3 +40,7 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+
+urls.ttl
+testLocal.ttl
