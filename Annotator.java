@@ -1,3 +1,5 @@
+// Autores: Adrian Martin Ruiz y Antonio Fariña Elorza
+
 import com.google.genai.types.Content;
 import com.google.genai.types.GenerateContentConfig;
 import com.google.genai.types.GenerateContentResponse;
@@ -58,8 +60,8 @@ public class Annotator {
              PrintWriter writer = new PrintWriter(new FileWriter(nombreArchivoSalida))) {
 
             // Iniciar el archivo turtle salida
+            writer.println("@base <urn:uc3m.es:miaa> .");
             writer.println("@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .");
-            writer.println("@prefix miaa: <urn:uc3m.es:miaa#> .");
             writer.println("@prefix dcterms: <http://purl.org/dc/terms/> .");
             writer.println();
 
@@ -90,9 +92,9 @@ public class Annotator {
                             String nodoEntidad = "_:ent" + contadorEntidades++;
 
                             // Escribir las tripletas RDF que relacionan la URL con la entidad encontrada
-                            writer.println("<" + urlString + "> miaa:mentionsEntity " + nodoEntidad + " .");
-                            writer.println(nodoEntidad + " a miaa:" + e.getType() + " ;");
-                            writer.println("         miaa:name \"" + textoLimpio + "\" .");
+                            writer.println("<" + urlString + "> <#mentionsEntity> " + nodoEntidad + " .");
+                            writer.println(nodoEntidad + " a <#" + e.getType() + "> ;");
+                            writer.println("         <#name> \"" + textoLimpio + "\" .");
 
                             System.out.println(" - " + e.getText() + " -> " + e.getType());
 
@@ -105,8 +107,8 @@ public class Annotator {
 
                                     // Si la respuesta es una URL valida de Wikipedia, escribir las tripletas de instancia
                                     if (wikipediaUrl.startsWith("https://en.wikipedia.org/")) {
-                                        writer.println("<" + urlString + "> miaa:mentionsInstance <" + wikipediaUrl + "> .");
-                                        writer.println("<" + wikipediaUrl + "> a dcterms:Location .");
+                                        writer.println("<" + urlString + "> <#mentionsInstance> <" + wikipediaUrl + "> .");
+                                        writer.println("<" + wikipediaUrl + "> a <#Location> .");
                                         System.out.println("EXITO: " + wikipediaUrl);
                                     } else {
                                         System.out.println("FALLO (Respuesta no valida: " + wikipediaUrl + ")");
@@ -170,7 +172,6 @@ public class Annotator {
             }else{
                 throw e;
             }
-            
         }
     }
 }

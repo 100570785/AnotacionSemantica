@@ -28,6 +28,6 @@
     rdfs:subClassOf <#Entity> ;
     rdfs:label "Organizacion" .
 
-<#entityName> a rdf:Property ;
+<#name> a rdf:Property ;
     rdfs:domain <#Entity> ;
     rdfs:range rdfs:Literal .
