@@ -34,3 +34,12 @@ Abre tu terminal (por ejemplo, PowerShell), navega hasta la carpeta raíz del pr
 
 ```powershell
 mvn clean compile exec:java "-Dexec.mainClass=org.example.Annotator" "-Dexec.args=urls.txt"
+```
+## Compilación y ejecución desde la terminal sin maven
+Para compilar el proyecto se deberá ejecutar en la terminal en el directorio donde esté la clase `Annotator.java` y la biblioteca precompilada `utils-1.0-jar-with-dependencies.jar`
+
+`javac -cp utils-1.0-jar-with-dependencies.jar Annotator.java`
+
+Esto generará un archivo `Annotator.class`. Para ejecutar ahora el código se lanzará en el mismo directorio el comando:
+
+`java -cp ".;utils-1.0-jar-with-dependencies.jar" Annotator <fichero> [-C <clase>]` 
