@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 /**
  * Clase principal que lee URLs desde un fichero, extrae entidades con GATE
  * y genera un fichero RDF en formato Turtle (.ttl) enriquecido con
- * desambiguación de localizaciones mediante la API de Gemini.
+ * desambiguacion de localizaciones mediante la API de Gemini.
  */
 public class Annotator {
 
@@ -26,10 +26,6 @@ public class Annotator {
     private static int nConsultasGemini = 0;
 
     public static void main(String[] args) {
-        // Configurar el User-Agent para que las peticiones HTTP no sean bloqueadas por los servidores
-        System.setProperty("http.agent",
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
-
         // Validar que se ha proporcionado al menos el fichero de entrada como argumento
         if (args.length == 0) {
             System.out.println("Debes ejecutar el programa con: java Annotator <fichero> [-C <clase>]");
@@ -40,19 +36,19 @@ public class Annotator {
         String nombreArchivo = args[0];
         String clase = "urn:uc3m.es:miaa#webPage";
 
-        // Si se especifica la opción -C, se usa la clase proporcionada por el usuario
+        // Si se especifica la opcion -C, se usa la clase proporcionada por el usuario
         if (args.length == 3 && args[1].equals("-C")) {
             clase = args[2];
         }
 
-        // Generar el nombre del fichero de salida sustituyendo la extensión por .ttl
+        // Generar el nombre del fichero de salida sustituyendo la extension por .ttl
         String nombreArchivoSalida = nombreArchivo.contains(".")
                 ? nombreArchivo.substring(0, nombreArchivo.lastIndexOf('.')) + ".ttl"
                 : nombreArchivo + ".ttl";
 
         System.out.println("Leyendo " + nombreArchivo + " usando la clase: " + clase);
 
-        // Inicializar el lector de fichero y el motor GATE para la extracción de entidades
+        // Inicializar el lector de fichero y el motor GATE para la extraccion de entidades
         File archivo = new File(nombreArchivo);
         MyGATE gate = MyGATE.getInstance();
         System.out.println("Leyendo " + nombreArchivo);
@@ -67,7 +63,7 @@ public class Annotator {
             writer.println("@prefix dcterms: <http://purl.org/dc/terms/> .");
             writer.println();
 
-            // Contador para generar identificadores únicos de nodos anonimos (_:ent1,_:ent2, ...)
+            // Contador para generar identificadores unicos de nodos anonimos (_:ent1,_:ent2, ...)
             int contadorEntidades = 1;
 
             // Recorrer cada URL del fichero de entrada
@@ -88,9 +84,9 @@ public class Annotator {
                         String contexto = resultados.stream().map(Entity::getText).collect(Collectors.joining(", "));
 
                         for (Entity e : resultados) {
-                            // Escapar comillas y saltos de línea para que el texto sea válido en Turtle
+                            // Escapar comillas y saltos de linea para que el texto sea valido en Turtle
                             String textoLimpio = e.getText().replace("\"", "\\\"").replace("\n", " ");
-                            // Crear un identificador único para el nodo blanco de esta entidad
+                            // Crear un identificador unico para el nodo blanco de esta entidad
                             String nodoEntidad = "_:ent" + contadorEntidades++;
 
                             // Escribir las tripletas RDF que relacionan la URL con la entidad encontrada
@@ -100,23 +96,23 @@ public class Annotator {
 
                             System.out.println(" - " + e.getText() + " -> " + e.getType());
 
-                            // --- CONEXIÓN CON GEMINI PARA DESAMBIGUAR LOCALIZACIONES ---
+                            // --- CONEXION CON GEMINI PARA DESAMBIGUAR LOCALIZACIONES ---
                             if (e.getType().equals("Location")) {
                                 String query = "Location: " + e.getText() + "\nContext: " + contexto;
                                 try {
-                                    System.out.print("   [Consultando a Gemini para desambiguar '" + e.getText() + "'...] ");
+                                    System.out.print("   Consultando a Gemini para desambiguar '" + e.getText() + "'... ");
                                     String wikipediaUrl = consultarGemini(query).trim();
 
-                                    // Si la respuesta es una URL válida de Wikipedia, añadir las tripletas de instancia
+                                    // Si la respuesta es una URL valida de Wikipedia, escribir las tripletas de instancia
                                     if (wikipediaUrl.startsWith("https://en.wikipedia.org/")) {
                                         writer.println("<" + urlString + "> miaa:mentionsInstance <" + wikipediaUrl + "> .");
                                         writer.println("<" + wikipediaUrl + "> a dcterms:Location .");
-                                        System.out.println("ÉXITO: " + wikipediaUrl);
+                                        System.out.println("EXITO: " + wikipediaUrl);
                                     } else {
-                                        System.out.println("FALLO (Respuesta no válida: " + wikipediaUrl + ")");
+                                        System.out.println("FALLO (Respuesta no valida: " + wikipediaUrl + ")");
                                     }
 
-                                    // Pausa obligatoria de 12 segundos para no superar las 5 consultas/minuto de la API gratuita
+                                    // Sleep de 12 segundos para no superar las 5 consultas/minuto gratis
                                     Thread.sleep(12500);
 
                                 } catch (InterruptedException ie) {
@@ -128,7 +124,7 @@ public class Annotator {
                             }
                         }
                     } else {
-                        System.out.println(" - [Aviso] No se pudieron extraer entidades.");
+                        System.out.println("Aviso: No se pudieron extraer entidades.");
                     }
                 } catch (MalformedURLException e) {
                     System.out.println("Error en la URL: " + e.getMessage());
@@ -137,29 +133,44 @@ public class Annotator {
                     System.out.println("Error procesando o conectando con la URL (" + urlString + "): " + e.getMessage());
                 }
             }
-            System.out.println("\n¡Éxito! Fichero " + nombreArchivoSalida + " generado y enriquecido correctamente.");
+            System.out.println("\nFichero " + nombreArchivoSalida + " generado correctamente.");
 
         } catch (FileNotFoundException e) {
             System.out.println("Error al leer el archivo de entrada: " + e.getMessage());
         } catch (IOException e) {
             System.out.println("Error al crear el archivo de salida: " + e.getMessage());
         }
-        System.out.println(nConsultasGemini);
     }
 
     // Metodo para hacer consultas a gemini sobre las entidades Location que recibe un String con la
     // location y devuelve un String con la URL de la Wikipedia mas probable de esa location
-    private static String consultarGemini(String location) {
-        nConsultasGemini++;
-        // Este texto igual hay que cambiarlo que lo evalua
+    private static String consultarGemini(String location) throws Exception {
+        // Si ya hemos superado las 20 consultas en la ejecucion
+        if (nConsultasGemini >= 20) {
+            throw new Exception("Se han superado las 20 consultas gratuitas."); 
+        }
+
         String query = "I am going to give you a location name and some context from a document. " +
                 "Please answer ONLY with the URL of the English version of Wikipedia (starting with https://en.wikipedia.org/wiki/) "
                 + "that most likely identifies that location. Do not include any other text, markdown, or explanation.";
+        
         GenerateContentConfig config =
                 GenerateContentConfig.builder().systemInstruction(
                         Content.fromParts(Part.fromText(query))).build();
 
-        GenerateContentResponse response = client.models.generateContent("gemini-2.5-flash", location, config);
-        return response.text();
+        try {
+            GenerateContentResponse response = client.models.generateContent("gemini-2.5-flash", location, config);
+            nConsultasGemini++;
+            return response.text();
+            
+        } catch (Exception e) {
+            // Si gemini nos devuelve una Exception 
+            if(e.getMessage().contains("429 Too Many Requests")){// nos hemos pasado de las 20 consultas
+                throw new Exception("Se han superado las 20 consultas gratuitas."); 
+            }else{
+                throw e;
+            }
+            
+        }
     }
 }
