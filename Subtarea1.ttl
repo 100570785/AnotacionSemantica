@@ -16,27 +16,18 @@
 <#mentionsEntity> rdfs:subPropertyOf <#mentions> ;
 		  rdfs:range <#Entity> .
 
-# =============================================================================
-# Subtarea 1: Ampliación del vocabulario RDF Schema
-# Descripción: Definición de las subclases de Entity (Person, Location,
-# Organization) y la propiedad literal para el nombre de la entidad.
-# =============================================================================
-
-# 1. Definir las 3 subclases de la clase Entity
 <#Person> a rdfs:Class ;
     rdfs:subClassOf <#Entity> ;
     rdfs:label "Persona" .
 
 <#Location> a rdfs:Class ;
     rdfs:subClassOf <#Entity> ;
-    rdfs:label "Ubicación" .
+    rdfs:label "Ubicacion" .
 
 <#Organization> a rdfs:Class ;
     rdfs:subClassOf <#Entity> ;
-    rdfs:label "Organización" .
+    rdfs:label "Organizacion" .
 
-# 2. Definir una propiedad con valor literal para el nombre de la entidad
 <#entityName> a rdf:Property ;
     rdfs:domain <#Entity> ;
-    rdfs:range rdfs:Literal ;
-    rdfs:comment "El nombre legible de la entidad con nombre." .
+    rdfs:range rdfs:Literal .
